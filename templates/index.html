@@ -145,8 +145,15 @@
   <script src="/static/script.js"></script>
   <script>
     const usuarioInput = document.getElementById('usuario');
-    const saved = localStorage.getItem('opella_usuario');
-    if (saved) usuarioInput.value = saved;
+    const params = new URLSearchParams(window.location.search);
+    const fromUrl = params.get('usuario');
+    if (fromUrl) {
+      usuarioInput.value = fromUrl;
+      localStorage.setItem('opella_usuario', fromUrl);
+    } else {
+      const saved = localStorage.getItem('opella_usuario');
+      if (saved) usuarioInput.value = saved;
+    }
     usuarioInput.addEventListener('change', () => {
       localStorage.setItem('opella_usuario', usuarioInput.value);
     });
