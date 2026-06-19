@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Opella Flow</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>Opella Flow</h1>
+      <span class="badge">V_PSA_BR_MANUAL_CLASSIFICATION</span>
+    </div>
+  </header>
+
+  <!-- Preview Modal -->
+  <div id="previewModal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-title">Pré-visualização do Arquivo Final</div>
+      <div class="meta-grid" id="modalMeta"></div>
+      <p class="preview-count" id="previewCount"></p>
+      <div class="table-container">
+        <table id="previewTable" class="preview-table">
+          <thead><tr id="previewHead"></tr></thead>
+          <tbody id="previewBody"></tbody>
+        </table>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="closePreview()">Cancelar</button>
+        <button type="button" class="btn-confirm" id="confirmBtn" onclick="confirmSubmit()">Confirmar e Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="alert-box" class="alert hidden"></div>
+
+    <div class="card">
+      <div class="card-title">Informações de Classificação</div>
+      <p class="subtitle">Estes metadados serão aplicados a todas as linhas do seu arquivo final.</p>
+
+      <form id="uploadForm">
+        <div class="grid-2">
+          <!-- Coluna 1 -->
+          <div>
+            <div class="form-group">
+              <label>Nome do Assunto *</label>
+              <input type="text" id="assunto" name="assunto" placeholder="Ex: Informação de calendário" required />
+            </div>
+            <div class="form-group">
+              <label>Key Info *</label>
+              <input type="text" id="key_info" name="key_info" placeholder="Ex: config 1 = periodo" required />
+            </div>
+            <div class="form-group">
+              <label>Seu Nome/ID *</label>
+              <input type="text" id="usuario" name="usuario" value="{{ current_user }}" placeholder="Para log e concatenação" required readonly />
+            </div>
+          </div>
+
+          <!-- Coluna 2 -->
+          <div>
+            <div class="form-group">
+              <label>Área (BU) *</label>
+              <select id="bu_selecionada" name="bu_selecionada" required onchange="toggleNewBU()">
+                <option value="">Selecione...</option>
+                {% for bu in bu_list %}
+                  <option value="{{ bu }}">{{ bu }}</option>
+                {% endfor %}
+                <option value="+ Cadastrar Nova BU">+ Cadastrar Nova BU</option>
+              </select>
+            </div>
+            <div class="form-group hidden" id="nova_bu_group">
+              <label>Nome da Nova BU</label>
+              <input type="text" id="nova_bu" name="nova_bu" />
+            </div>
+            <div class="form-group">
+              <label>Comentário</label>
+              <textarea id="comentario" name="comentario" rows="3" placeholder="Observações adicionais..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="card-title">Base de Dados (Máx 5 Colunas)</div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button type="button" class="tab-btn active" onclick="openTab(event, 'upload')">Fazer Upload</button>
+          <button type="button" class="tab-btn" onclick="openTab(event, 'manual')">Digitar Manualmente</button>
+        </div>
+
+        <!-- Tab: Upload -->
+        <div id="tab-upload" class="tab-content active">
+          <div class="file-drop-area" id="dropArea">
+            <span class="file-msg">Arraste seu arquivo .csv aqui ou clique para selecionar</span>
+            <input class="file-input" type="file" id="arquivo" name="arquivo" accept=".csv" />
+          </div>
+        </div>
+
+        <!-- Tab: Manual -->
+        <div id="tab-manual" class="tab-content">
+          <p class="subtitle">Preencha os dados abaixo. Clique nos cabeçalhos para renomeá-los (opcional).</p>
+          <div class="table-container">
+            <table id="manualTable">
+              <thead>
+                <tr>
+                  <th contenteditable="true" class="editable-header" title="Clique para renomear">CONFIG_1</th>
+                  <th contenteditable="true" class="editable-header" title="Clique para renomear">CONFIG_2</th>
+                  <th contenteditable="true" class="editable-header" title="Clique para renomear">CONFIG_3</th>
+                  <th contenteditable="true" class="editable-header" title="Clique para renomear">CONFIG_4</th>
+                  <th contenteditable="true" class="editable-header" title="Clique para renomear">CONFIG_5</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="text" /></td>
+                  <td><input type="text" /></td>
+                  <td><input type="text" /></td>
+                  <td><input type="text" /></td>
+                  <td><input type="text" /></td>
+                  <td><button type="button" class="btn-danger" onclick="removeRow(this)">X</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <button type="button" class="btn-secondary" onclick="addRow()">+ Adicionar Linha</button>
+          </div>
+        </div>
+
+        <input type="hidden" id="modo" name="modo" value="upload" />
+        <input type="hidden" id="dados_manuais" name="dados_manuais" value="" />
+
+        <div class="divider"></div>
+        <button type="submit" class="btn-primary" id="submitBtn">Processar e Enviar</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>

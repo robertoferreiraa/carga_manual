@@ -1,0 +1,24 @@
+# Ambiente virtual
+.venv/
+venv/
+env/
+
+# Variáveis de ambiente (nunca commitar)
+.env
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Dados locais de teste
+mock_sftp_folder/
+
+# Lista de BUs gerada em runtime
+bu_list.json
+
+# IDE
+.vscode/
+.idea/
