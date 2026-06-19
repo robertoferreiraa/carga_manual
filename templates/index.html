@@ -58,7 +58,7 @@
             </div>
             <div class="form-group">
               <label>Seu Nome/ID *</label>
-              <input type="text" id="usuario" name="usuario" value="{{ current_user }}" placeholder="Para log e concatenação" required readonly />
+              <input type="text" id="usuario" name="usuario" placeholder="Seu nome ou ID" required />
             </div>
           </div>
 
@@ -143,5 +143,13 @@
   </div>
 
   <script src="/static/script.js"></script>
+  <script>
+    const usuarioInput = document.getElementById('usuario');
+    const saved = localStorage.getItem('opella_usuario');
+    if (saved) usuarioInput.value = saved;
+    usuarioInput.addEventListener('change', () => {
+      localStorage.setItem('opella_usuario', usuarioInput.value);
+    });
+  </script>
 </body>
 </html>
